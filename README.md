@@ -92,6 +92,23 @@ Options:
 python main.py --input path/to/input_signatures.tsv --save_reprint reprint_matrix.tsv --sep '\t'
 ```
 
+### 5. Complete workflow: Generate all plots (signatures and RePrints)
+
+The `generate_all_plots.py` script provides a complete workflow that:
+- Generates both standard signature plots and RePrint plots
+- Saves all data to CSV files
+- Creates combined PDF files with all plots
+- Generates individual PNG files for RePrints
+
+```bash
+python generate_all_plots.py <cosmic_file> [output_base_name]
+```
+
+**Example:**
+```bash
+python generate_all_plots.py tests/data/COSMIC_v3.4_SBS_GRCh37.txt cosmic_v3.4_GRCh37
+```
+
 ## Input Format
 
 Input should be a tab-separated (or CSV) file with mutation types as rows and signatures as columns, e.g.:
@@ -120,8 +137,11 @@ python main.py --input tests/data/COSMIC_v2_SBS_GRCh37.txt --prefix reprint_ --s
 ```
 reprint_tool/
     core.py         # Core computation (RePrint)
-    plot.py         # Plotting and PDF export
+    plot.py         # Plotting and PDF export (standard bar charts)
+    plot_static.py  # RePrint plotting (seamless 3-panel visualizations)
+    analyze.py      # Similarity heatmap generation
 main.py             # Command-line interface
+generate_all_plots.py  # Complete workflow script
 tests/              # Unit tests and test data
 ```
 

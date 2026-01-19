@@ -89,11 +89,15 @@ def create_main_dashboard(df, signature, title, yaxis_title,
     ax.set_title(title, fontsize=14, pad=20)
     
     if show_x_labels:
-        ax.set_xlabel('Mutation Context', fontsize=12)
+        # Remove X-axis label
+        ax.set_xlabel('')
+        # Set ticks but make them invisible
         ax.set_xticks(x_pos)
-        # Format labels (simple format)
+        # Format labels (simple format) - shift right by half bar width to center with bars
         formatted_labels = [format_context_label(ctx) for ctx in contexts]
         ax.set_xticklabels(formatted_labels, rotation=90, ha='center', fontsize=8, family='monospace')
+        # Remove tick marks (keep labels)
+        ax.tick_params(axis='x', which='both', length=0)
     else:
         ax.set_xlabel('')
         ax.set_xticks([])
@@ -107,11 +111,16 @@ def create_main_dashboard(df, signature, title, yaxis_title,
         ax.set_yticklabels([])
     
     ax.set_ylim(0, y_max * 1.05)
-    # Legend without title (matching user request)
-    ax.legend(fontsize=10, title=None)
     ax.grid(axis='y', alpha=0.3, linestyle='--')
     
-    plt.tight_layout()
+    # Remove frame (all spines)
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.spines['left'].set_visible(False)
+    ax.spines['bottom'].set_visible(False)
+    
+    # Adjust margins: reduce left, increase right
+    plt.subplots_adjust(left=0.05, right=0.98, top=0.95, bottom=0.15)
     return fig
 
 
@@ -258,9 +267,13 @@ def create_main_dashboard_horizontal(df, signature, title, yaxis_title, figsize=
 
     # Update x-axis (only for bottom subplot)
     axes[-1].set_xticks(x_pos)
+    # Remove X-axis label
+    axes[-1].set_xlabel('')
     # Format labels (simple format)
     formatted_labels = [format_context_label(ctx) for ctx in context_order]
     axes[-1].set_xticklabels(formatted_labels, rotation=90, ha='center', fontsize=8, family='monospace')
+    # Remove tick marks (keep labels)
+    axes[-1].tick_params(axis='x', which='both', length=0)
     axes[-1].spines['top'].set_visible(False)
     axes[-1].spines['right'].set_visible(False)
     axes[-1].spines['left'].set_visible(False)
@@ -270,34 +283,11 @@ def create_main_dashboard_horizontal(df, signature, title, yaxis_title, figsize=
     for row_idx in range(len(mutation_pairs) - 1):
         axes[row_idx].set_xticks([])
         axes[row_idx].set_xticklabels([])
-
-    # Add legend
-    handles = []
-    labels = []
-    for c_mut, t_mut in mutation_pairs:
-        colors = color_schemes[(c_mut, t_mut)]
-        handles.append(mpatches.Patch(color=colors['left'], label=c_mut))
-        handles.append(mpatches.Patch(color=colors['right'], label=t_mut))
-        labels.extend([c_mut, t_mut])
-    
-    # Remove duplicates while preserving order
-    seen = set()
-    unique_handles = []
-    unique_labels = []
-    for h, l in zip(handles, labels):
-        if l not in seen:
-            seen.add(l)
-            unique_handles.append(h)
-            unique_labels.append(l)
-    
-    # Legend without title (matching user request)
-    fig.legend(unique_handles, unique_labels, title=None,
-               loc='upper right', bbox_to_anchor=(1.02, 1), fontsize=10)
     
     plt.suptitle(title, fontsize=14, y=0.98)
     
-    # Use subplots_adjust instead of tight_layout for better control
-    plt.subplots_adjust(left=0.1, right=0.95, top=0.95, bottom=0.15, hspace=0.05)
+    # Adjust margins: reduce left, increase right
+    plt.subplots_adjust(left=0.05, right=0.98, top=0.95, bottom=0.15, hspace=0.05)
     
     return fig
 
@@ -322,10 +312,13 @@ def save_all_signatures_to_pdf(df, output_dir=".", prefix="reprint_", yaxis_titl
     """
     os.makedirs(output_dir, exist_ok=True)
     for signature in df.columns:
+        # Format title as "SBS1 signature" style
+        title = f"{signature} signature"
+        
         fig = create_main_dashboard(
             df,
             signature=signature,
-            title=f"{prefix}{signature} - Probabilities of Specific Tri-nucleotide Context Mutations",
+            title=title,
             yaxis_title=yaxis_title,
             figsize=figsize
         )
@@ -357,10 +350,13 @@ def save_all_signatures_to_single_pdf(df, output_pdf, prefix="", yaxis_title="Pr
         for i, signature in enumerate(df.columns, 1):
             print(f"  Processing {i}/{len(df.columns)}: {signature}")
             try:
+                # Format title as "SBS1 signature" style
+                title = f"{signature} signature"
+                
                 fig = create_main_dashboard(
                     df,
                     signature=signature,
-                    title=f"{prefix}{signature} - Probabilities of Specific Tri-nucleotide Context Mutations by Mutation Type",
+                    title=title,
                     yaxis_title=yaxis_title,
                     figsize=figsize
                 )

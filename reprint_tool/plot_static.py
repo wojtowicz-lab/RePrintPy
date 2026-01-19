@@ -117,7 +117,7 @@ def plot_reprint_seamless(reprint_name, c_probs, t_probs,
     x_pos_c = np.arange(16)
     x_pos_t = np.arange(16) + 16.5
     x_pos = np.concatenate([x_pos_c, x_pos_t])
-    width = 0.95  # Increased width to reduce gap between bars
+    width = 0.75  # Reduced width to increase gap between bars
     
     # All panels use the same scale: 0 to 1.0
     # Each column's three bars will sum to 1.0 in total height
@@ -167,7 +167,7 @@ def plot_reprint_seamless(reprint_name, c_probs, t_probs,
             x_labels_formatted.append(formatted)
         
         ax_bot.set_xticks(x_pos)
-        ax_bot.set_xticklabels(x_labels_formatted, rotation=90, ha='center', fontsize=8, family='monospace')
+        ax_bot.set_xticklabels(x_labels_formatted, rotation=90, ha='center', fontsize=10, family='monospace')
         ax_bot.tick_params(axis='x', length=0)
     else:
         ax_bot.set_xticks([])
@@ -179,7 +179,7 @@ def plot_reprint_seamless(reprint_name, c_probs, t_probs,
         display_name = reprint_name.replace('reprint_', '').replace('_reprint', '')
         title = f"{display_name} RePrint"
     
-    fig.suptitle(title, fontsize=14, y=0.98)
+    fig.suptitle(title, fontsize=16, y=0.98)
     
     # Add legend in upper right corner (matching plot.py style)
     # Create legend patches matching plot.py style
@@ -193,9 +193,10 @@ def plot_reprint_seamless(reprint_name, c_probs, t_probs,
     ]
     
     # Position legend in upper right corner (no title, matching plot.py)
+    # Aligned with top of bars in top panel (no frame)
     fig.legend(legend_handles, [h.get_label() for h in legend_handles],
-               loc='upper right', bbox_to_anchor=(0.98, 0.98),
-               fontsize=10, frameon=True, fancybox=False, shadow=False)
+               loc='upper right', bbox_to_anchor=(0.98, 0.90),
+               fontsize=12, frameon=False, fancybox=False, shadow=False)
     
     # Add scale indicator below legend (matching user request)
     # Place scale on the bottom panel, positioned below the legend area
@@ -219,19 +220,19 @@ def plot_reprint_seamless(reprint_name, c_probs, t_probs,
     
     # Add labels for tick marks
     ax_bot.text(scale_x_pos + 0.3, 0, '0', 
-                ha='left', va='center', fontsize=10,
+                ha='left', va='center', fontsize=12,
                 transform=ax_bot.transData)
     ax_bot.text(scale_x_pos + 0.3, 0.25, '0.25', 
-                ha='left', va='center', fontsize=10,
+                ha='left', va='center', fontsize=12,
                 transform=ax_bot.transData)
     ax_bot.text(scale_x_pos + 0.3, 0.5, '0.5', 
-                ha='left', va='center', fontsize=10,
+                ha='left', va='center', fontsize=12,
                 transform=ax_bot.transData)
     ax_bot.text(scale_x_pos + 0.3, 0.75, '0.75', 
-                ha='left', va='center', fontsize=10,
+                ha='left', va='center', fontsize=12,
                 transform=ax_bot.transData)
     ax_bot.text(scale_x_pos + 0.3, 1.0, '1.0', 
-                ha='left', va='center', fontsize=10,
+                ha='left', va='center', fontsize=12,
                 transform=ax_bot.transData)
     
     # Set white background

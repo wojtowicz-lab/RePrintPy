@@ -1,8 +1,9 @@
 import argparse
 import os
+import tempfile
 import pandas as pd
 import matplotlib.pyplot as plt
-from reprint_tool.plot import save_all_signatures_to_pdf, create_main_dashboard
+from reprint_tool.plot_static import generate_all_reprints
 from reprint_tool.core import reprint
 from reprint_tool.analyze import (
     create_heatmap_with_custom_sim,
@@ -32,27 +33,44 @@ def main():
     df = pd.read_csv(args.input, sep=sep, index_col=0)
     df_reprint = reprint(df)
 
+    # Save reprint DataFrame to CSV (needed for plot_static functions)
     if args.save_reprint:
         os.makedirs(os.path.dirname(args.save_reprint) or '.', exist_ok=True)
         df_reprint.to_csv(args.save_reprint, sep=sep)
         print(f"Saved reprint DataFrame to {args.save_reprint}")
-
-   
-    save_all_signatures_to_pdf(df_reprint, output_dir=args.output_dir, prefix=args.prefix)
-
+        reprint_csv_path = args.save_reprint
+    else:
+        # Create temporary CSV file for plot_static functions
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.csv', delete=False) as tmp_file:
+            df_reprint.to_csv(tmp_file.name, sep=sep)
+            reprint_csv_path = tmp_file.name
+    
+    # Generate reprint plots using plot_static
     if args.export_png:
+        # Generate PNG files
+        generate_all_reprints(
+            csv_path=reprint_csv_path,
+            output_pdf=None,
+            output_dir=args.output_dir,
+            sep=sep
+        )
+    else:
+        # Generate PDF file with all plots
+        pdf_path = os.path.join(args.output_dir, f"{args.prefix}all_reprints.pdf")
         os.makedirs(args.output_dir, exist_ok=True)
-        for signature in df_reprint.columns:
-            fig = create_main_dashboard(
-                df_reprint,
-                signature=signature,
-                title=f"{args.prefix}{signature} - Probabilities of Specific Tri-nucleotide Context Mutations by Mutation Type",
-                yaxis_title="Probabilities",
-            )
-            png_path = os.path.join(args.output_dir, f"{args.prefix}{signature}.png")
-            fig.savefig(png_path, format="png", dpi=200, bbox_inches='tight')
-            plt.close(fig)
-            print(f"Saved: {png_path}")
+        generate_all_reprints(
+            csv_path=reprint_csv_path,
+            output_pdf=pdf_path,
+            output_dir=None,
+            sep=sep
+        )
+    
+    # Clean up temporary file if we created one
+    if not args.save_reprint:
+        try:
+            os.unlink(reprint_csv_path)
+        except:
+            pass
 
     if args.analyze_png:
         metric_func = calculate_rmse if args.analyze_metric == 'rmse' else calculate_cosine
