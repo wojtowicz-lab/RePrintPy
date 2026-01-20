@@ -107,34 +107,39 @@ def create_main_dashboard(df, signature, title, yaxis_title,
 
     if show_y_labels:
         ax.set_ylabel(yaxis_title, fontsize=12, labelpad=2)
-        
         ax.tick_params(axis='y', which='major', pad=2, labelsize=10)
     else:
         ax.set_ylabel('')
         ax.set_yticks([])
         ax.set_yticklabels([])
 
-
-    plt.subplots_adjust(left=0.05, right=0.88, top=0.92, bottom=0.20)
-    
-    
     ax.set_ylim(0, y_max * 1.05)
     ax.grid(axis='y', alpha=0.3, linestyle='--')
-    
-    # Legend for mutation types (no surrounding box)
-    legend = ax.legend(fontsize=10, title=None,
-                       loc='upper right', bbox_to_anchor=(1.02, 1.0))
-    legend.get_frame().set_linewidth(0.0)
-    legend.get_frame().set_edgecolor('none')
     
     # Remove frame (all spines)
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
     ax.spines['left'].set_visible(False)
     ax.spines['bottom'].set_visible(False)
-    
-    # Adjust margins: almost no space on the left, extra room on the right for legend
-    plt.subplots_adjust(left=0.0, right=0.88, top=0.92, bottom=0.20)
+
+    # Legend for mutation types, placed outside but close to the plotting area
+    legend_handles = []
+    legend_labels = []
+    for mut in mutations:
+        legend_handles.append(mpatches.Patch(color=colors[mut], label=mut))
+        legend_labels.append(mut)
+    fig.legend(
+        legend_handles,
+        legend_labels,
+        title=None,
+        loc='upper right',
+        bbox_to_anchor=(0.98, 0.98),
+        frameon=False,
+        fontsize=10,
+    )
+
+    # Adjust margins: no extra space on the left, reserve room on the right for legend
+    plt.subplots_adjust(left=0.02, right=0.92, top=0.90, bottom=0.20)
     return fig
 
 
