@@ -103,15 +103,29 @@ def create_main_dashboard(df, signature, title, yaxis_title,
         ax.set_xticks([])
         ax.set_xticklabels([])
     
+    ax.set_xlim(-0.7, n_contexts - 0.3) 
+
     if show_y_labels:
-        ax.set_ylabel(yaxis_title, fontsize=12)
+        ax.set_ylabel(yaxis_title, fontsize=12, labelpad=2)
+        
+        ax.tick_params(axis='y', which='major', pad=2, labelsize=10)
     else:
         ax.set_ylabel('')
         ax.set_yticks([])
         ax.set_yticklabels([])
+
+
+    plt.subplots_adjust(left=0.05, right=0.88, top=0.92, bottom=0.20)
+    
     
     ax.set_ylim(0, y_max * 1.05)
     ax.grid(axis='y', alpha=0.3, linestyle='--')
+    
+    # Legend for mutation types (no surrounding box)
+    legend = ax.legend(fontsize=10, title=None,
+                       loc='upper right', bbox_to_anchor=(1.02, 1.0))
+    legend.get_frame().set_linewidth(0.0)
+    legend.get_frame().set_edgecolor('none')
     
     # Remove frame (all spines)
     ax.spines['top'].set_visible(False)
@@ -119,8 +133,8 @@ def create_main_dashboard(df, signature, title, yaxis_title,
     ax.spines['left'].set_visible(False)
     ax.spines['bottom'].set_visible(False)
     
-    # Adjust margins: reduce left, increase right
-    plt.subplots_adjust(left=0.05, right=0.98, top=0.95, bottom=0.15)
+    # Adjust margins: almost no space on the left, extra room on the right for legend
+    plt.subplots_adjust(left=0.0, right=0.88, top=0.92, bottom=0.20)
     return fig
 
 
