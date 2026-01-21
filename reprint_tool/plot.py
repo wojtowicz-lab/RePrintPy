@@ -136,6 +136,8 @@ def create_main_dashboard(df, signature, title, yaxis_title,
         bbox_to_anchor=(0.98, 0.98),
         frameon=False,
         fontsize=10,
+        handlelength=1.0,
+        handleheight=1.0,
     )
 
     # Adjust margins: no extra space on the left, reserve room on the right for legend

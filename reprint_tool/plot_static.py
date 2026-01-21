@@ -196,7 +196,8 @@ def plot_reprint_seamless(reprint_name, c_probs, t_probs,
     # Aligned with top of bars in top panel (no frame)
     fig.legend(legend_handles, [h.get_label() for h in legend_handles],
                loc='upper right', bbox_to_anchor=(0.98, 0.91),
-               fontsize=12, frameon=False, fancybox=False, shadow=False)
+               fontsize=12, frameon=False, fancybox=False, shadow=False,
+               handlelength=1.0, handleheight=1.0)
     
     # Add scale indicator below legend (matching user request)
     # Place scale on the bottom panel, positioned below the legend area
