@@ -42,3 +42,29 @@ jobs:
     - name: Run tests with coverage
       run: |
         pytest --cov=reprint_tool --cov-report=xml --cov-report=term-missing
+  package:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+
+    - name: Build sdist and wheel
+      run: |
+        python -m pip install --upgrade pip build twine
+        python -m build
+        twine check --strict dist/*
+
+    - name: Install wheel in a clean venv and smoke-test
+      run: |
+        python -m venv /tmp/venv
+        /tmp/venv/bin/pip install dist/*.whl
+        cd /tmp
+        /tmp/venv/bin/reprint --version
+        /tmp/venv/bin/reprint-all-plots || test $? -eq 1
+        /tmp/venv/bin/python -c "import reprint_tool; print(reprint_tool.__version__)"
+        /tmp/venv/bin/reprint --input "$GITHUB_WORKSPACE/tests/data/COSMIC_v2_SBS_GRCh37.txt" --output_dir /tmp/out --save_reprint /tmp/out/reprint.tsv
+        test -f /tmp/out/reprint_all_reprints.pdf
