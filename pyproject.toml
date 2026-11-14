@@ -1,19 +1,36 @@
 [build-system]
-requires = ["setuptools>=61.0"]
+requires = ["setuptools>=77.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "reprint-tool"
 version = "0.1.0"
 description = "Tool to compute DNA Repair FootPrint (RePrint) from COSMIC signatures"
-authors = [{ name = "Damian Wójtowicz, Marcin Wierzbinski", email = "d.wojtowicz@uw.edu.pl" }]
-license = {text = "MIT"}
 readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [
+    { name = "Damian Wójtowicz", email = "d.wojtowicz@uw.edu.pl" },
+    { name = "Marcin Wierzbiński" },
+]
+keywords = ["mutational signatures", "COSMIC", "DNA repair", "bioinformatics", "RePrint"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+]
 dependencies = [
-    "numpy",
-    "pandas",
-    "scipy",
-    "matplotlib"
+    "numpy>=1.24",
+    "pandas>=2.0",
+    "scipy>=1.10",
+    "matplotlib>=3.7",
 ]
 
 [project.optional-dependencies]
@@ -21,5 +38,19 @@ dev = [
     "pytest",
     "pytest-cov",
     "ruff",
-    "flake8"
+    "flake8",
+    "build",
+    "twine",
 ]
+
+[project.scripts]
+reprint = "reprint_tool.cli:main"
+reprint-all-plots = "reprint_tool.generate_all:main"
+
+[project.urls]
+Homepage = "https://github.com/marcin119a/RePrint.py"
+Repository = "https://github.com/marcin119a/RePrint.py"
+Issues = "https://github.com/marcin119a/RePrint.py/issues"
+
+[tool.setuptools.packages.find]
+include = ["reprint_tool*"]
