@@ -25,9 +25,9 @@ T_CONTEXT_LABELS = [f"{l}T{r}" for l in BASES for r in BASES]
 ALL_CONTEXT_LABELS = C_CONTEXT_LABELS + T_CONTEXT_LABELS
 
 
-def load_reprint_data(csv_path):
+def load_reprint_data(csv_path, sep=','):
     """Load RePrint data from CSV file."""
-    df = pd.read_csv(csv_path, index_col=0)
+    df = pd.read_csv(csv_path, sep=sep, index_col=0)
     return df
 
 
@@ -274,7 +274,7 @@ def generate_single_reprint(csv_path, reprint_name, output_path,
 
 
 def generate_all_reprints(csv_path, output_pdf=None, output_dir=None,
-                          show_x_labels=True, show_y_labels=False):
+                          show_x_labels=True, show_y_labels=False, sep=','):
     """
     Generate RePrint plots for all signatures in the CSV file.
     
@@ -290,9 +290,11 @@ def generate_all_reprints(csv_path, output_pdf=None, output_dir=None,
         Whether to show X-axis labels (default: True)
     show_y_labels : bool, optional
         Whether to show Y-axis labels (default: False)
+    sep : str, optional
+        Column separator of the CSV file (default: ',')
     """
     print(f"Loading RePrint data from {csv_path}...")
-    df = load_reprint_data(csv_path)
+    df = load_reprint_data(csv_path, sep=sep)
     
     # Support both 'reprint_*' and '*_reprint' column naming conventions
     reprint_names = [col for col in df.columns if col.startswith('reprint_') or col.endswith('_reprint')]
