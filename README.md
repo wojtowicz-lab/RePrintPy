@@ -161,3 +161,6 @@ tests/               # Unit tests and test data
 
 `main.py` and `generate_all_plots.py` in the repository root are kept as thin wrappers for backward compatibility.
 
+## Funding
+
+The project was financed by the Polish National Agency for Academic Exchange within the Polish Returns Programme (PPN/PPO/2020/1/00028).
