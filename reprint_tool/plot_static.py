@@ -5,6 +5,8 @@ Features: no y-axes, centered middle panel, compact 16x4.5 inch format.
 Creates individual PNG files and a combined PDF with all RePrint plots.
 """
 
+import os
+
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -301,6 +303,11 @@ def generate_all_reprints(csv_path, output_pdf=None, output_dir=None,
     n_reprints = len(reprint_names)
     
     print(f"Found {n_reprints} RePrints to process")
+
+    if output_dir:
+        os.makedirs(output_dir, exist_ok=True)
+    if output_pdf:
+        os.makedirs(os.path.dirname(output_pdf) or '.', exist_ok=True)
     
     # Generate PDF with all plots
     if output_pdf:
